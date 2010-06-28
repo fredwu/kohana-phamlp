@@ -34,6 +34,34 @@ class Kohana_Haml {
 	}
 	
 	/**
+	 * Sets a global variable, similar to [View::set], except that the
+	 * variable will be accessible to all views.
+	 *
+	 * @see     View::set_global()
+	 * @param   string  variable name or an array of variables
+	 * @param   mixed   value
+	 * @return  void
+	 */
+	public static function set_global($key, $value = NULL)
+	{
+		View::set_global($key, $value);
+	}
+	
+	/**
+	 * Assigns a global variable by reference, similar to [View::bind], except
+	 * that the variable will be accessible to all views.
+	 *
+	 * @see     View::set_global()
+	 * @param   string  variable name
+	 * @param   mixed   referenced variable
+	 * @return  void
+	 */
+	public static function bind_global($key, & $value)
+	{
+		View::bind_global($key, $value);
+	}
+	
+	/**
 	 * Includes the necessary phamlp parser file
 	 *
 	 * @return void
