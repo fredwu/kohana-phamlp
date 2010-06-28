@@ -27,7 +27,7 @@ If you would like to take advantage of the Haml controller shipped with this mod
 
 If you would like to take control of the view rendering yourself, you can:
 
-* Call `Haml::factory()` instead of `View::factory()`, e.g. `Haml::factory($view_file, $view_data)`.
+* Call `Haml::factory()` instead of `View::factory()`, e.g. `Haml::factory($view_file, $view_data, $haml_options)`.
 
 ## Todo
 
