@@ -21,13 +21,14 @@ class Kohana_Haml {
 	 * @see     View::factory()
 	 * @param   string  view filename
 	 * @param   array   array of values
+	 * @param   array   options
 	 * @return  View
 	 */
-	public static function factory($file = NULL, array $data = NULL)
+	public static function factory($file = NULL, array $data = NULL, array $options = array())
 	{
 		self::include_phamlp();
 		
-		$haml_file = self::compile_haml($file, $data);
+		$haml_file = self::compile_haml($file, $data, $options);
 		
 		return new View($haml_file, $data);
 	}
@@ -60,9 +61,10 @@ class Kohana_Haml {
 	 *
 	 * @param   string  view filename
 	 * @param   array   array of values
+	 * @param   array   options
 	 * @return  string  path of the compiled HAML file
 	 */
-	private static function compile_haml($file, $data)
+	private static function compile_haml($file, $data, $options)
 	{
 		$view_dir       = APPPATH.'views/';
 		$cache_dir      = self::$config['phamlp']['haml']['cache_dir'];
@@ -82,7 +84,9 @@ class Kohana_Haml {
 		
 		if ( ! is_file($cached_file))
 		{
-			$haml = new HamlParser(array());
+			$options = array_merge(self::$config['phamlp']['haml']['options'], $options);
+			
+			$haml = new HamlParser($options);
 			$haml->parse($view_dir.$file.$haml_ext, $cache_dir_real);
 		}
 		

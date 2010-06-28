@@ -21,6 +21,12 @@ class Controller_Haml extends Controller {
 	public $view_data = array();
 	
 	/**
+	 * @see  http://code.google.com/p/phamlp/wiki/HamlOptions
+	 * @var  array  haml options
+	 */
+	public $haml_options = array();
+	
+	/**
 	 * @var  boolean  auto render template
 	 **/
 	public $auto_render = TRUE;
@@ -32,7 +38,7 @@ class Controller_Haml extends Controller {
 	{
 		if ($this->auto_render === TRUE)
 		{
-			$this->template = Haml::factory($this->template);
+			$this->template = Haml::factory($this->template, null, $this->haml_options);
 		}
 		
 		return parent::before();
@@ -45,7 +51,7 @@ class Controller_Haml extends Controller {
 	{
 		if ($this->auto_render === TRUE)
 		{
-			$this->template->content = Haml::factory($this->request->controller.'/'.$this->request->action, $this->view_data);
+			$this->template->content = Haml::factory($this->request->controller.'/'.$this->request->action, $this->view_data, $this->haml_options);
 			$this->request->response = $this->template;
 		}
 		
