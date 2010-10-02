@@ -845,7 +845,6 @@ class HamlParser {
 					$attributes,
 					$this->parseAttributeHash($line[self::HAML_RUBY_ATTRIBUTES])
 			);
-
 		}
 		if (!empty($line[self::HAML_OBJECT_REFERENCE])) {
 			$objectRef = explode(',', preg_replace('/,\s*/', ',', $line[self::HAML_OBJECT_REFERENCE]));
@@ -908,10 +907,10 @@ class HamlParser {
 				}
 				$attributes[$attr[3]] = '<?php echo ' . join(($attr[3] === 'id' ? ".'_'." : ".' '."), $values) . '; ?>';
 			}
-			elseif (!empty($attr[6])) { 
-				$attributes[$attr[3]] = $this->interpolate($attr[6], $attr[3]);
+			elseif (!empty($attr[6])) {
+				$attributes[$attr[3]] = $this->interpolate($attr[6]);
 			}
-			elseif (isset($attr[7])) {
+			else {
 				switch ($attr[7]) {
 					case 'true':
 						$attributes[$attr[3]] = $attr[3];
@@ -1190,7 +1189,7 @@ class HamlParser {
 	 * @param string the text to interpolate
 	 * @return string the interpolated text
 	 */
-	protected function interpolate($string, $type = '') { 
-	  return preg_replace(self::MATCH_INTERPOLATION, (in_array($type, $this->minimizedAttributes) ? '\1' : self::INTERPOLATE), $string);
+	protected function interpolate($string) {
+	  return preg_replace(self::MATCH_INTERPOLATION, self::INTERPOLATE, $string);
 	}
 }

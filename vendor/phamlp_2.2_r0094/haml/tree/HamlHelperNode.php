@@ -49,8 +49,8 @@ class HamlHelperNode extends HamlNode {
 		foreach ($this->children as $child) {
 			$output .= trim($child->render());
 		} // foreach
-		preg_match(self::REGEX_HELPER, $this->helperMethod, $matches); 
-		$output = '<?php '.(empty($matches[1]) ? 'echo' : $matches[1])." {$this->helperClass}::".$matches[2]."(".(empty($output) ? '' : "'$output',").$matches[3]."); ?>";
+		preg_match(self::REGEX_HELPER, $this->helperMethod, $matches);
+		$output = '<?php '.(empty($matches[1]) ? 'echo' : $matches[1])." {$this->helperClass}::".$matches[2]."('$output',{$matches[3]}); ?>";
 		return $this->debug($output);
 	}
 }
