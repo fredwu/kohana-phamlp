@@ -51,8 +51,10 @@ class HamlRootNode extends HamlNode {
 	 */
 	public function render() {
 		foreach ($this->children as $child) {
+		
 			$this->output .= $child->render();
 		} // foreach
+		
 		return $this->output;
 	}
 }

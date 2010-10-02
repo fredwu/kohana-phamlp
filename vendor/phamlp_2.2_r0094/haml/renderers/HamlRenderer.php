@@ -70,12 +70,19 @@ class HamlRenderer {
 			if (is_integer($name)) {  // attribute function
 						$output .= " $value";
 			}
-			elseif ($name == $value &&
+			elseif ($name == $value && in_array($name, $this->minimizedAttributes) &&
 				($this->format === 'html4' || $this->format === 'html5')) {
 						$output .= " $name";
 			}
 			else {
-				$output .= " $name={$this->attrWrapper}$value{$this->attrWrapper}";
+				if(in_array($name, $this->minimizedAttributes))
+				{
+					$output .= "<"."?php if(isset($value) && !empty($value)): ?"."> $name={$this->attrWrapper}<"."?php echo $value; ?".">{$this->attrWrapper};<"."?php endif; ?".">";
+				} 
+				else
+				{
+					$output .= " $name={$this->attrWrapper}$value{$this->attrWrapper}";
+				}
 			}
 		}
 		return $output;
