@@ -76,7 +76,17 @@ class HamlRenderer {
 			}
 			elseif(in_array($name, $this->minimizedAttributes))
 			{
-				$output .= "<"."?php if(isset($value) && !empty($value)): ?"."> $name={$this->attrWrapper}<"."?php echo $value; ?".">{$this->attrWrapper};<"."?php endif; ?".">";
+				// $value is a variable, isset is called to make sure E_NOTICE is not thrown
+				if(preg_match("/^\\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/", trim($value)))
+				{
+					$output .= "<"."?php if(isset($value) && !empty($value)): ?"."> $name={$this->attrWrapper}<"."?php echo $value; ?".">{$this->attrWrapper};<"."?php endif; ?".">";
+				}
+				
+				// $value is either a method, a constant or a ternary operator
+				else
+				{
+					$output .= "<"."?php if($value): ?"."> $name={$this->attrWrapper}<"."?php echo $value; ?".">{$this->attrWrapper};<"."?php endif; ?".">";					
+				}
 			} 
 			else
 			{
