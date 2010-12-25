@@ -6,7 +6,7 @@ return array
 		'lib_dir' => realpath(dirname(__FILE__).'/../vendor/phamlp_2.2_r0094/').'/',
 		'haml'    => array
 		(
-			'cache_dir' => '_compiled/', // cache_dir is a directory within APPPATH.'views/'
+			'cache_dir' => 'haml/', // cache_dir is a directory within APPPATH.'cache/'
 			'extension' => '.haml', // HAML template file extension
 			'options'   => array
 			(
