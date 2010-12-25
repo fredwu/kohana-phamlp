@@ -115,6 +115,7 @@ class Kohana_Haml {
 		
 		if ( ! is_file($cached_file))
 		{
+			self::create_dir_unless_exists($cache_root . dirname($file));
 			$options = array_merge(self::$config['phamlp']['haml']['options'], $options);
 			
 			$haml = new HamlParser($options);
@@ -148,7 +149,7 @@ class Kohana_Haml {
 	{
 		if ( ! is_dir($dir))
 		{
-			mkdir($dir);
+			mkdir($dir, 0777, TRUE);
 		}
 	}
 	
