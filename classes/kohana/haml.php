@@ -95,14 +95,17 @@ class Kohana_Haml {
 	private static function compile_haml($file, $data, $options)
 	{
 		$view_dir       = APPPATH.'views/';
-		$cache_dir      = self::$config['phamlp']['haml']['cache_dir'];
+
+		// '../' part is necessary for Kohana's find_file to work properly
+		$cache_dir      = "../cache/".self::$config['phamlp']['haml']['cache_dir'];
+
 		$cache_root     = $view_dir.$cache_dir;
 		$cache_dir_real = $cache_root.dirname($file);
 		$haml_ext       = self::$config['phamlp']['haml']['extension'];
-		$cached_file    = $view_dir.$cache_dir.$file.EXT;
+		$cached_file    = $cache_root.$file.EXT;
 		
-		self::make_dir_writable($view_dir);
 		self::create_dir_unless_exists($cache_root);
+		self::make_dir_writable($cache_root);
 		
 		// in development mode, let's reload the template on each request
 		if (Kohana::$environment === Kohana::DEVELOPMENT)
