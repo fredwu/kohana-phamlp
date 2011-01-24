@@ -1,3 +1,5 @@
+[![](http://stillmaintained.com/fredwu/kohana-phamlp.png)](http://stillmaintained.com/fredwu/kohana-phamlp)
+
 # Kohana PHamlP Module
 
 This module is a bridge between the [Kohana PHP framework](http://kohanaframework.org/) and the [PHamlP library](http://code.google.com/p/phamlp/).
