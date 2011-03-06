@@ -2,7 +2,7 @@
 return array
 (
 	'parsers' => array('haml'),
-	'lib_dir' => 'phamlp_2.2_r0094', // depends on phamlp version
+	'lib_dir' => 'd4rky-pl-phamlp', // depends on phamlp version
 	'haml'    => array
 	(
 		'cache_dir' => 'haml', // cache_dir is a directory within APPPATH.'cache/'

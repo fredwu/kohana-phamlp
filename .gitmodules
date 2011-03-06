@@ -1,0 +1,3 @@
+[submodule "vendor/d4rky-pl-phamlp"]
+	path = vendor/d4rky-pl-phamlp
+	url = git@github.com:d4rky-pl/phamlp
