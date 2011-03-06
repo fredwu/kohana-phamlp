@@ -8,7 +8,7 @@
  * @copyright   Wuit.com <http://wuit.com/>
  * @license     http://www.opensource.org/licenses/mit-license.php
  */
-class Kohana_Haml {
+class Kohana_Haml extends View {
 	
 	/**
 	 * @var  array  Kohana::config('phamlp')
@@ -30,7 +30,7 @@ class Kohana_Haml {
 		
 		$haml_file = self::compile_haml($file, $data, $options);
 		
-		return new View($haml_file, $data);
+		return new Haml($haml_file, $data);
 	}
 	
 	/**
@@ -90,10 +90,8 @@ class Kohana_Haml {
 	{
 		$view_dir       = APPPATH.'views/';
 
-		// '../' part is necessary for Kohana's find_file to work properly
-		$cache_dir      = "../cache/".self::$config['haml']['cache_dir'].'/';
+		$cache_root     = APPPATH.'cache/'.self::$config['haml']['cache_dir'].'/';
 
-		$cache_root     = $view_dir.$cache_dir;
 		$cache_dir_real = $cache_root.dirname($file);
 		$haml_ext       = self::$config['haml']['extension'];
 		$cached_file    = $cache_root.$file.EXT;
@@ -116,7 +114,54 @@ class Kohana_Haml {
 			$haml->parse($view_dir.$file.$haml_ext, $cache_dir_real);
 		}
 		
-		return $cache_dir.$file;
+		return $file;
+	}
+	
+	/**
+	 * Kohana 3.1 uses very "silly" extension checking
+	 * We're overloading set_filename to seek our view in cache
+	 *
+	 * @param   string  $dir  path of the directory
+	 * @return  void
+	 */
+	public function set_filename($file)
+	{
+		// Detect if there was a file extension
+		$_file = explode('.', $file);
+
+		// If there are several components
+		if (count($_file) > 1)
+		{
+			// Take the extension
+			$ext = array_pop($_file);
+			$file = implode('.', $_file);
+		}
+		// Otherwise set the extension to the standard
+		else
+		{
+			$ext = ltrim(EXT, '.');
+		}
+
+		if(substr(Kohana::VERSION, 0, 3) == '3.0')
+		{
+			$path = Kohana::find_file('cache', self::$config['haml']['cache_dir'].'/'.$file);
+		}
+		else
+		{
+			$path = Kohana::find_file('cache', self::$config['haml']['cache_dir'].'/'.$file, $ext);
+		}
+
+		if ($path === FALSE)
+		{
+			throw new Kohana_View_Exception('The requested view :file could not be found', array(
+				':file' => $file.($ext ? '.'.$ext : ''),
+			));
+		}
+
+		// Store the file path locally
+		$this->_file = $path;
+
+		return $this;
 	}
 	
 	/**
