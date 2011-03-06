@@ -26,7 +26,7 @@ class Kohana_Haml {
 	 */
 	public static function factory($file = NULL, array $data = NULL, array $options = array())
 	{
-		self::include_phamlp();
+		self::read_config();
 		
 		$haml_file = self::compile_haml($file, $data, $options);
 		
@@ -66,21 +66,15 @@ class Kohana_Haml {
 	 *
 	 * @return void
 	 */
-	private static function include_phamlp()
+	private static function read_config()
 	{
-		while ( ! class_exists('HamlParser'))
+		if( !is_array(self::$config) )
 		{
-			self::$config = Kohana::config('phamlp');
-			$haml_dir     = self::$config['phamlp']['lib_dir'].'haml';
-			
-			if ( ! is_dir($haml_dir))
-			{
-				throw new Exception("Cannot find phamlp's HAML directory.");
-			}
-			
-			set_include_path(get_include_path().PATH_SEPARATOR.$haml_dir);
-			
-			require_once 'HamlParser.php';
+			return self::$config = Kohana::config('phamlp');			
+		}
+		else
+		{
+			return self::$config;
 		}
 	}
 	
@@ -97,11 +91,11 @@ class Kohana_Haml {
 		$view_dir       = APPPATH.'views/';
 
 		// '../' part is necessary for Kohana's find_file to work properly
-		$cache_dir      = "../cache/".self::$config['phamlp']['haml']['cache_dir'];
+		$cache_dir      = "../cache/".self::$config['haml']['cache_dir'].'/';
 
 		$cache_root     = $view_dir.$cache_dir;
 		$cache_dir_real = $cache_root.dirname($file);
-		$haml_ext       = self::$config['phamlp']['haml']['extension'];
+		$haml_ext       = self::$config['haml']['extension'];
 		$cached_file    = $cache_root.$file.EXT;
 		
 		self::create_dir_unless_exists($cache_root);
@@ -116,7 +110,7 @@ class Kohana_Haml {
 		if ( ! is_file($cached_file))
 		{
 			self::create_dir_unless_exists($cache_root . dirname($file));
-			$options = array_merge(self::$config['phamlp']['haml']['options'], $options);
+			$options = array_merge(self::$config['haml']['options'], $options);
 			
 			$haml = new HamlParser($options);
 			$haml->parse($view_dir.$file.$haml_ext, $cache_dir_real);
