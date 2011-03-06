@@ -1,5 +1,3 @@
-[![](http://stillmaintained.com/fredwu/kohana-phamlp.png)](http://stillmaintained.com/fredwu/kohana-phamlp)
-
 # Kohana PHamlP Module
 
 This module is a bridge between the [Kohana PHP framework](http://kohanaframework.org/) and the [PHamlP library](http://code.google.com/p/phamlp/).
@@ -54,3 +52,5 @@ If you would like to take control of the view rendering yourself, you can:
 Copyright (c) 2010 Fred Wu (<http://fredwu.me>), released under the [MIT license](http://www.opensource.org/licenses/mit-license.php).
 
 Brought to you by **Wuit** - <http://wuit.com>.
+
+Currently maintained by Michał Matyas (<http://github.com/d4rky-pl>)
