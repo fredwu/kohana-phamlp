@@ -9,7 +9,8 @@ This module is for Kohana 3.0+.
 ## Installation
 
 * Download the source code, extract it and put it in your Kohana's modules directory.
-* Enable the module in your boostrap file (`boostrap.php` under your `application` directory).
+* Download phamlp and put it into vendor/ directory (<https://github.com/d4rky-pl/phamlp> is recommended over the original version, but you can find other forks on github)
+* Enable the module in your bootstrap file (`bootstrap.php` under your `application` directory).
 * Copy and paste the configuration file (`config/phamlp.php`) to your application's config directory.
 * Make necessary changes to the configuration file to suit your needs.
 * Copy and paste the controller file (`classes/controller/haml.php`) to your controller directory if you want to customise it.
