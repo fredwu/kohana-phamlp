@@ -1,5 +1,3 @@
-[![](http://stillmaintained.com/fredwu/kohana-phamlp.png)](http://stillmaintained.com/fredwu/kohana-phamlp)
-
 # Kohana PHamlP Module
 
 This module is a bridge between the [Kohana PHP framework](http://kohanaframework.org/) and the [PHamlP library](http://code.google.com/p/phamlp/).
@@ -11,7 +9,8 @@ This module is for Kohana 3.0+.
 ## Installation
 
 * Download the source code, extract it and put it in your Kohana's modules directory.
-* Enable the module in your boostrap file (`boostrap.php` under your `application` directory).
+* Download phamlp and put it into vendor/ directory (<https://github.com/d4rky-pl/phamlp> is recommended over the original version, but you can find other forks on github)
+* Enable the module in your bootstrap file (`bootstrap.php` under your `application` directory).
 * Copy and paste the configuration file (`config/phamlp.php`) to your application's config directory.
 * Make necessary changes to the configuration file to suit your needs.
 * Copy and paste the controller file (`classes/controller/haml.php`) to your controller directory if you want to customise it.
@@ -54,3 +53,5 @@ If you would like to take control of the view rendering yourself, you can:
 Copyright (c) 2010 Fred Wu (<http://fredwu.me>), released under the [MIT license](http://www.opensource.org/licenses/mit-license.php).
 
 Brought to you by **Wuit** - <http://wuit.com>.
+
+Currently maintained by Michał Matyas (<http://github.com/d4rky-pl>)
