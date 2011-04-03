@@ -88,9 +88,6 @@ class Kohana_Haml extends View {
 	 */
 	private static function compile_haml($file, $data, $options)
 	{
-
-		$view_dir       = APPPATH.'views/';
-
 		$cache_dir      = self::$config['haml']['cache_dir'].'/';
 		$cache_root     = APPPATH.'cache/'.self::$config['haml']['cache_dir'].'/';
 
@@ -113,7 +110,7 @@ class Kohana_Haml extends View {
 			$options = array_merge(self::$config['haml']['options'], $options);
 			
 			$haml = new HamlParser($options);
-			$haml->parse($view_dir.$file.$haml_ext, $cache_dir_real);	
+			$haml->parse(Kohana::find_file('views',$file, $haml_ext), $cache_dir_real);	
 		}
 
 		return $file;
