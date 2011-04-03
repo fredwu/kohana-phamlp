@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 return array
 (
-	'parsers' => array('haml'),
+	'parsers' => array('haml', 'sass'),
 	'lib_dir' => 'd4rky-pl-phamlp', // depends on phamlp version
 	'haml'    => array
 	(

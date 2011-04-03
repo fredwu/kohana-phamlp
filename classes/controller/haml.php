@@ -51,8 +51,16 @@ class Controller_Haml extends Controller {
 	{
 		if ($this->auto_render === TRUE)
 		{
-			$this->template->content = Haml::factory($this->request->controller.'/'.$this->request->action, $this->view_data, $this->haml_options);
-			$this->request->response = $this->template;
+			if(substr(Kohana::VERSION, 0, 3) == '3.0')
+			{
+				$this->template->content = Haml::factory($this->request->controller.'/'.$this->request->action, $this->view_data, $this->haml_options);
+				$this->request->response = $this->template;
+			}
+			else
+			{
+				$this->template->content = Haml::factory($this->request->controller().'/'.$this->request->action(), $this->view_data, $this->haml_options);				
+				$this->response->body($this->template);
+			}
 		}
 		
 		return parent::after();
