@@ -1,12 +1,12 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 return array
 (
-	'parsers' => array('haml'),
+	'parsers' => array('haml', 'sass'),
 	'lib_dir' => 'd4rky-pl-phamlp', // depends on phamlp version
 	'haml'    => array
 	(
 		'cache_dir' => 'haml', // cache_dir is a directory within APPPATH.'cache/'
-		'extension' => '.haml', // HAML template file extension
+		'extension' => 'haml', // HAML template file extension
 		'options'   => array
 		(
 			'attrWrapper'         => '"',
