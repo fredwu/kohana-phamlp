@@ -1,3 +1,7 @@
+This project has been dropped in favor of [kohana3-haml](https://github.com/d4rky-pl/kohana3-haml).
+
+***
+
 # Kohana PHamlP Module
 
 This module is a bridge between the [Kohana PHP framework](http://kohanaframework.org/) and the [PHamlP library](http://code.google.com/p/phamlp/).
