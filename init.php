@@ -1,6 +1,6 @@
 <?php
 
-$config = Kohana::config('phamlp');
+$config = Kohana::$config->load('phamlp');
 if ( in_array('haml', $config['parsers']) && ! class_exists('HamlParser'))
 {
 	$haml_dir = $config['lib_dir']. '/haml';
