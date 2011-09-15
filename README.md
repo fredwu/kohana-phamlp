@@ -1,4 +1,5 @@
-This project has been dropped in favor of [kohana3-haml](https://github.com/d4rky-pl/kohana3-haml).
+<del>This project has been dropped in favor of [kohana3-haml](https://github.com/d4rky-pl/kohana3-haml).</del>
+Looks like HamlPHP still needs a lot of work. Project is bringed back until bugs in HamlPHP are fixed.
 
 ***
 
