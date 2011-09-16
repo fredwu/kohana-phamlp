@@ -70,7 +70,7 @@ class Kohana_Haml extends View {
 	{
 		if( !is_array(self::$config) )
 		{
-			return self::$config = Kohana::$config->load('phamlp');	
+			return self::$config = Kohana::$config->load('phamlp');
 		}
 		else
 		{
@@ -116,15 +116,49 @@ class Kohana_Haml extends View {
 		return $file;
 	}
 	
-	/*
-	 * We're overloading set_filename because cache is only being kept in application/
+	/**
+	 * Kohana 3.1 uses very "silly" extension checking
+	 * We're overloading set_filename to seek our view in cache
 	 *
 	 * @param   string  $dir  path of the directory
 	 * @return  void
 	 */
 	public function set_filename($file)
 	{
-		$this->_file = APPPATH.'cache/'.self::$config['haml']['cache_dir'].'/'.$file.EXT;
+		// Detect if there was a file extension
+		$_file = explode('.', $file);
+
+		// If there are several components
+		if (count($_file) > 1)
+		{
+			// Take the extension
+			$ext = array_pop($_file);
+			$file = implode('.', $_file);
+		}
+		// Otherwise set the extension to the standard
+		else
+		{
+			$ext = ltrim(EXT, '.');
+		}
+
+		if(substr(Kohana::VERSION, 0, 3) == '3.0')
+		{
+			$path = Kohana::find_file('cache', self::$config['haml']['cache_dir'].'/'.$file);
+		}
+		else
+		{
+			$path = Kohana::find_file('cache', self::$config['haml']['cache_dir'].'/'.$file, $ext);
+		}
+		if ($path === FALSE)
+		{
+			throw new Kohana_View_Exception('The requested view :file could not be found', array(
+				':file' => $file.($ext ? '.'.$ext : ''),
+			));
+		}
+
+		// Store the file path locally
+		$this->_file = $path;
+
 		return $this;
 	}
 	
