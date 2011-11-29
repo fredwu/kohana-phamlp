@@ -15,6 +15,24 @@ class Kohana_Haml extends View {
 	 */
 	protected static $config;
 	
+	
+	/**
+	 * Prepares Haml view
+	 *
+	 * @see     View::__construct()
+	 * @param   string  view filename
+	 * @param   array   array of values
+	 * @param   array   options
+	 * @return  View
+	 */
+	 public function __construct($file = NULL, array $data = NULL, array $options = array())
+	 {
+ 		self::read_config();
+		self::compile_haml($file, $data, $options);
+
+		return parent::__construct($file, $data);
+	 }
+
 	/**
 	 * Returns a new View object
 	 *
@@ -26,11 +44,7 @@ class Kohana_Haml extends View {
 	 */
 	public static function factory($file = NULL, array $data = NULL, array $options = array())
 	{
-		self::read_config();
-		
-		$haml_file = self::compile_haml($file, $data, $options);
-		
-		return new Haml($haml_file, $data);
+		return new Haml($file, $data);
 	}
 	
 	/**
