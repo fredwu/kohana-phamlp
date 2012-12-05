@@ -9,13 +9,16 @@
  * @license     http://www.opensource.org/licenses/mit-license.php
  */
 class Kohana_Haml extends View {
-	
+
 	/**
 	 * @var  array  Kohana::config('phamlp')
 	 */
 	protected static $config;
-	
-	
+
+	protected $data;
+	protected $options;
+
+
 	/**
 	 * Prepares Haml view
 	 *
@@ -27,10 +30,11 @@ class Kohana_Haml extends View {
 	 */
 	 public function __construct($file = NULL, array $data = NULL, array $options = array())
 	 {
- 		self::read_config();
-		self::compile_haml($file, $data, $options);
-
-		return parent::__construct($file, $data);
+        self::$config = self::$config ?: Kohana::$config->load('phamlp');
+        $this->data = $data;
+ 		$this->options = $options;
+        $this->compile_haml($file);
+		return parent::__construct($file, $this->data);
 	 }
 
 	/**
@@ -44,9 +48,9 @@ class Kohana_Haml extends View {
 	 */
 	public static function factory($file = NULL, array $data = NULL, array $options = array())
 	{
-		return new Haml($file, $data);
+		return new Haml($file, $data, $options);
 	}
-	
+
 	/**
 	 * Sets a global variable, similar to [View::set], except that the
 	 * variable will be accessible to all views.
@@ -60,7 +64,7 @@ class Kohana_Haml extends View {
 	{
 		View::set_global($key, $value);
 	}
-	
+
 	/**
 	 * Assigns a global variable by reference, similar to [View::bind], except
 	 * that the variable will be accessible to all views.
@@ -74,24 +78,13 @@ class Kohana_Haml extends View {
 	{
 		View::bind_global($key, $value);
 	}
-	
-	/**
-	 * Includes the necessary phamlp parser file
-	 *
-	 * @return void
-	 */
-	private static function read_config()
-	{
-		if( !is_array(self::$config) )
-		{
-			return self::$config = Kohana::$config->load('phamlp');
-		}
-		else
-		{
-			return self::$config;
-		}
-	}
-	
+
+
+    private static function haml_ext()
+    {
+        return self::$config['haml']['extension'];
+    }
+
 	/**
 	 * Compiles the HAML template from the given HTML/PHP template
 	 *
@@ -100,36 +93,38 @@ class Kohana_Haml extends View {
 	 * @param   array   options
 	 * @return  string  path of the compiled HAML file
 	 */
-	private static function compile_haml($file, $data, $options)
+	private function compile_haml($file)
 	{
 		$cache_dir      = self::$config['haml']['cache_dir'].'/';
 		$cache_root     = APPPATH.'cache/'.self::$config['haml']['cache_dir'].'/';
 
 		$cache_dir_real = $cache_root.dirname($file);
-		$haml_ext       = self::$config['haml']['extension'];
 		$cached_file    = $cache_root.$file.EXT;
-		
+
 		self::create_dir_unless_exists($cache_root);
 		self::make_dir_writable($cache_root);
-		
+
 		// in development mode, let's reload the template on each request
 		if (Kohana::$environment === Kohana::DEVELOPMENT)
 		{
 			self::remove_haml_file($cached_file);
 		}
-		
+
 		if ( ! is_file($cached_file))
 		{
 			self::create_dir_unless_exists($cache_root . dirname($file));
-			$options = array_merge(self::$config['haml']['options'], $options);
-			
+			$options = array_merge(self::$config['haml']['options'], $this->options);
+
 			$haml = new HamlParser($options);
-			$haml->parse(Kohana::find_file('views',$file, $haml_ext), $cache_dir_real);	
+			$haml->parse(
+                Kohana::find_file('views', $file, self::haml_ext()),
+                $cache_dir_real
+            );
 		}
 
 		return $file;
 	}
-	
+
 	/**
 	 * Kohana 3.1 uses very "silly" extension checking
 	 * We're overloading set_filename to seek our view in cache
@@ -137,7 +132,7 @@ class Kohana_Haml extends View {
 	 * @param   string  $dir  path of the directory
 	 * @return  void
 	 */
-	public function set_filename($file)
+	public function set_filename($file, $validate_file_change = true)
 	{
 		// Detect if there was a file extension
 		$_file = explode('.', $file);
@@ -155,27 +150,44 @@ class Kohana_Haml extends View {
 			$ext = ltrim(EXT, '.');
 		}
 
-		if(substr(Kohana::VERSION, 0, 3) == '3.0')
-		{
-			$path = Kohana::find_file('cache', self::$config['haml']['cache_dir'].'/'.$file);
-		}
-		else
-		{
-			$path = Kohana::find_file('cache', self::$config['haml']['cache_dir'].'/'.$file, $ext);
-		}
-		if ($path === FALSE)
-		{
-			throw new Kohana_View_Exception('The requested view :file could not be found', array(
-				':file' => $file.($ext ? '.'.$ext : ''),
-			));
-		}
+        $base_name = self::$config['haml']['cache_dir'].'/'.$file;
+        $path = self::find_file('cache', $base_name, $ext);
 
-		// Store the file path locally
-		$this->_file = $path;
+        // izhevsky: added 2 fixes:
+        // path exists, but cached file has to be recompiled, because source .haml was changed
+        // path not exists, because previous view didn't exist, but now we set up right name
 
-		return $this;
-	}
-	
+        $real_file = self::find_file('views', $file, self::haml_ext());
+        if ($path === FALSE)
+        {
+            if (file_exists($real_file))
+            {
+                // file exists, recompile
+                self::compile_haml($file);
+                $this->set_filename($file, false);
+                return;
+            }
+            throw new Kohana_View_Exception(
+                'The requested view :file could not be found',
+                array(':file' => $file.($ext ? '.haml' : ''))
+            );
+        }
+        elseif (Kohana::$environment === Kohana::DEVELOPMENT &&
+            $validate_file_change &&
+            filemtime($real_file) >= filemtime($path)
+        )
+        {
+            self::compile_haml($file);
+            $this->set_filename($file, false);
+            return;
+        }
+
+        // Store the file path locally
+        $this->_file = $path;
+
+        return $this;
+    }
+
 	/**
 	 * Checks and makes the directory writable
 	 *
@@ -189,7 +201,7 @@ class Kohana_Haml extends View {
 			chmod($dir, 0777);
 		}
 	}
-	
+
 	/**
 	 * Creates the directory unless it already exists
 	 *
@@ -203,9 +215,19 @@ class Kohana_Haml extends View {
 			mkdir($dir, 0777, TRUE);
 		}
 	}
-	
+
 	protected static function remove_haml_file($file)
 	{
 		@unlink($file);
+	}
+
+    // platform-independent wrapper around Kohana::find_file
+	protected static function find_file($dir, $file, $ext)
+	{
+        if(substr(Kohana::VERSION, 0, 3) == '3.0')
+        {
+            return Kohana::find_file($dir, $file);
+        }
+        return Kohana::find_file($dir, $file, $ext);
 	}
 }
