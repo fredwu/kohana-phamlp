@@ -58,12 +58,10 @@ class Controller_Haml_Template extends Controller_haml {
 		{
 			if(substr(Kohana::VERSION, 0, 3) == '3.0')
 			{
-				$this->template->content = Haml::factory($this->request->controller.'/'.$this->request->action, $this->view_data, $this->haml_options);
 				$this->request->response = $this->template;
 			}
 			else
 			{
-				$this->template->content = Haml::factory($this->request->controller().'/'.$this->request->action(), $this->view_data, $this->haml_options);
 				$this->response->body($this->template);
 			}
 		}
